@@ -7,8 +7,9 @@ const port = 3010;
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static('public'));
 
+// request.html example
 app.get('/users', async (req, res) => {
-  // artificial delay
+  // artificial delay to show the loader (spinner) in the UI
   await new Promise(resolve => setTimeout(resolve, 500));
 
   console.log(req.query);
@@ -22,6 +23,18 @@ app.get('/users', async (req, res) => {
       ${users.map(user => `<li>${user.name}</li>`).join('')}
     </ul>
   `);
+});
+
+// temperature.html example
+app.post('/convert', (req, res) => {
+  const fahrenheit = parseFloat(req.body.fahrenheit);
+  const celsius = (fahrenheit - 32) * (5/9);
+
+  res.send(`
+    <p>
+      ${fahrenheit} degrees Fahrenheit is equal to ${celsius.toFixed(2)} degrees Celsius
+    </p>
+  `)
 });
 
 // const dumbDb = ['initial item'];
