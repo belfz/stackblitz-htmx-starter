@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>HTMX starter</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <script
+      src="https://unpkg.com/htmx.org@1.9.12"
+      integrity="sha384-ujb1lZYygJmzgSwoxRggbCHcjc0rB2XoQrxeTUQyRjrOnlCoYta87iKBWq3EsdM2"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <!-- Here be TODO app scaffolding (currently disabled on server) with TODOs: -->
+    <div class="text-center">
+      <ol id="todo-list" hx-get="/todo" hx-trigger="load"></ol>
+      <form hx-post="/todo" hx-target="#todo-list" hx-swap="beforeend">
+        <label for="newTodo">New todo:</label>
+        <input type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" name="newTodo" id="newTodo" />
+        <button type="submit" class="bg-green-500 text-white py-2p px-3 my-5 rounded-lg">submit</button>
+      </form>
+    </div>
+  </body>
+</html>

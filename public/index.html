@@ -1,22 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <title>HTMX starter</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
     <script
       src="https://unpkg.com/htmx.org@1.9.12"
       integrity="sha384-ujb1lZYygJmzgSwoxRggbCHcjc0rB2XoQrxeTUQyRjrOnlCoYta87iKBWq3EsdM2"
       crossorigin="anonymous"
     ></script>
-    <title>HTMX starter</title>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
-    <ol id="todo-list" hx-get="/todo" hx-trigger="load"></ol>
-    <form hx-post="/todo" hx-target="#todo-list" hx-swap="beforeend">
-      <label for="newTodo">New todo:</label>
-      <input type="text" name="newTodo" id="newTodo" />
-      <button type="submit">submit</button>
-    </form>
+    <div class="text-center">
+    </div>
   </body>
 </html>

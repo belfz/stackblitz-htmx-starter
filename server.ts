@@ -7,17 +7,34 @@ const port = 3010;
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static('public'));
 
-const dumbDb = ['initial item'];
+app.get('/users', async (req, res) => {
+  // artificial delay
+  await new Promise(resolve => setTimeout(resolve, 500));
 
-app.get('/todo', (req, res) => {
-  res.send(dumbDb.map((el) => `<li>${el}</li>`).join(''));
+  console.log(req.query);
+  const limit = +(req.query.limit || '10');
+  const response = await fetch(`https://jsonplaceholder.typicode.com/users?_limit=${limit}`);
+  const users = await response.json() as { id: number; name: string }[];
+
+  res.send(`
+    <h1 class="text-2xl font-bold my-4">Users</h1>
+    <ul>
+      ${users.map(user => `<li>${user.name}</li>`).join('')}
+    </ul>
+  `);
 });
 
-app.post('/todo', (req, res) => {
-  const { newTodo } = req.body;
-  dumbDb.push(newTodo);
-  res.send(`<li>${newTodo}</li>`);
-});
+// const dumbDb = ['initial item'];
+
+// app.get('/todo', (req, res) => {
+//   res.send(dumbDb.map((el) => `<li>${el}</li>`).join(''));
+// });
+
+// app.post('/todo', (req, res) => {
+//   const { newTodo } = req.body;
+//   dumbDb.push(newTodo);
+//   res.send(`<li>${newTodo}</li>`);
+// });
 
 app.listen(port, () => {
   console.log('yo');
