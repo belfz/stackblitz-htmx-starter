@@ -9,9 +9,6 @@ app.use(express.static('public'));
 
 // request.html example
 app.get('/users', async (req, res) => {
-  // artificial delay to show the loader (spinner) in the UI
-  await new Promise(resolve => setTimeout(resolve, 500));
-
   console.log(req.query);
   const limit = +(req.query.limit || '10');
   const response = await fetch(`https://jsonplaceholder.typicode.com/users?_limit=${limit}`);
@@ -69,6 +66,40 @@ app.post('/search', async (req, res) => {
       <td></td>
     </tr>
   `).join(''))
+});
+
+// validation.html example (email validation)
+const emailRegex = /^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/;
+app.post('/contact/email', (req, res) => {
+  const { email } = req.body;
+
+  const isValid = {
+    message: "That email is valid",
+    class: "text-green-700"
+  };
+
+  const isInvalid = {
+    message: "Please use a valid email address",
+    class: "text-red-700"
+  };
+
+  const result = emailRegex.test(email) ? isValid : isInvalid;
+
+  return res.send(`
+      <div class="mb-4" hx-target="this" hx-swap="outerHTML">
+        <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email address</label>
+        <input
+          name="email"
+          hx-post="/contact/email"
+          class="border rounded-lg py-2 px-3 w-full focus:outline-none focus:border-blue-500"
+          type="email"
+          id="email"
+          value="${email}"
+          required
+        />
+        <div class="${result.class}">${result.message}</div>
+      </div>
+    `);
 });
 
 // const dumbDb = ['initial item'];
