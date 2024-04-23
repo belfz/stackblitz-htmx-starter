@@ -111,20 +111,35 @@ type TodoItem = {
 
 const newTodo = (title: string): TodoItem => ({
   title,
-  id: v4(),
+  id: `id-${v4()}`, // make sure all ids start with a letter, otherwise they can't be used as valid ids for html elements
   done: false
 });
 
+// pretend this is a database ;)
 let dumbDb: TodoItem[] = [newTodo('initial item')];
 
 const renderTodoItem = (item: TodoItem): string => (
   `
-    <li class="${item.done ? "line-through" : "no-underline"}" hx-put="/todo" hx-trigger="click" hx-vals='{"id": "${item.id}"}' hx-swap="outerHTML">${item.title}</li>
+    <li class="flex items-center mb-2 bg-slate-500 p-2 rounded shadow" id="${item.id}">
+      <button
+        hx-delete="/todo/${item.id}"
+        hx-target="#todo-list"
+        hx-swap="innerHTML"
+        hx-confirm="Are you sure you want to remove this item?"
+        class="text-sm bg-gray-100 hover:bg-gray-300 py-2 px-2 rounded-full focus:outline-none focus:shadow-outline shadow transition duration-150 ease-in-out mr-2"
+      >❌</button>
+      <button
+        hx-put="/todo/${item.id}"
+        hx-target="#${item.id}"
+        hx-swap="outerHTML"
+        class="text-sm bg-gray-100 hover:bg-gray-300 py-2 px-2 rounded-full focus:outline-none focus:shadow-outline shadow transition duration-150 ease-in-out mr-2"
+      >${item.done ? "⏳" : "✅"}</button>
+      <h1 class="text-xl ${item.done ? "line-through" : "no-underline"}">${item.title}</h1>
+    </li>
   `
 )
 
-app.get('/todo', (req, res) => {
-  console.log(`GET all`);
+app.get('/todo', (_req, res) => {
   res.send(dumbDb.map(renderTodoItem).join(''));
 });
 
@@ -134,17 +149,23 @@ app.post('/todo', (req, res) => {
   res.send(renderTodoItem(newTodoItem));
 });
 
-app.put('/todo', (req, res) => {
-  const { id } = req.body;
-  console.log(`PUT for ${id}`);
+app.put('/todo/:id', (req, res) => {
+  const { id } = req.params;
   const itemToModify = dumbDb.find(elem => elem.id === id);
   if (itemToModify) {
-    // console.log(`found item with title "${itemToModify.title}" and status done: ${itemToModify.done}`)
     itemToModify.done = !itemToModify.done;
     res.send(renderTodoItem(itemToModify));
   }
 
   res.status(400).send();
+});
+
+app.delete('/todo/:id', (req, res) => {
+  const { id } = req.params;
+
+  dumbDb = dumbDb.filter(elem => elem.id !== id);
+
+  return res.send(dumbDb.map(renderTodoItem).join(""));
 });
 
 app.listen(port, () => {
