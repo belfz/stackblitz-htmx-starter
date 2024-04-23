@@ -1,5 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
+import { v4 } from "uuid";
 
 const app = express();
 const port = 3010;
@@ -9,7 +10,6 @@ app.use(express.static('public'));
 
 // request.html example
 app.get('/users', async (req, res) => {
-  console.log(req.query);
   const limit = +(req.query.limit || '10');
   const response = await fetch(`https://jsonplaceholder.typicode.com/users?_limit=${limit}`);
   const users = await response.json() as { id: number; name: string }[];
@@ -102,18 +102,51 @@ app.post('/contact/email', (req, res) => {
     `);
 });
 
-// const dumbDb = ['initial item'];
+// todos.html example
+type TodoItem = {
+  title: string;
+  id: string;
+  done: boolean;
+}
 
-// app.get('/todo', (req, res) => {
-//   res.send(dumbDb.map((el) => `<li>${el}</li>`).join(''));
-// });
+const newTodo = (title: string): TodoItem => ({
+  title,
+  id: v4(),
+  done: false
+});
 
-// app.post('/todo', (req, res) => {
-//   const { newTodo } = req.body;
-//   dumbDb.push(newTodo);
-//   res.send(`<li>${newTodo}</li>`);
-// });
+let dumbDb: TodoItem[] = [newTodo('initial item')];
+
+const renderTodoItem = (item: TodoItem): string => (
+  `
+    <li class="${item.done ? "line-through" : "no-underline"}" hx-put="/todo" hx-trigger="click" hx-vals='{"id": "${item.id}"}' hx-swap="outerHTML">${item.title}</li>
+  `
+)
+
+app.get('/todo', (req, res) => {
+  console.log(`GET all`);
+  res.send(dumbDb.map(renderTodoItem).join(''));
+});
+
+app.post('/todo', (req, res) => {
+  const newTodoItem = newTodo(req.body.newTodo);
+  dumbDb.push(newTodoItem);
+  res.send(renderTodoItem(newTodoItem));
+});
+
+app.put('/todo', (req, res) => {
+  const { id } = req.body;
+  console.log(`PUT for ${id}`);
+  const itemToModify = dumbDb.find(elem => elem.id === id);
+  if (itemToModify) {
+    // console.log(`found item with title "${itemToModify.title}" and status done: ${itemToModify.done}`)
+    itemToModify.done = !itemToModify.done;
+    res.send(renderTodoItem(itemToModify));
+  }
+
+  res.status(400).send();
+});
 
 app.listen(port, () => {
-  console.log('yo');
+  console.log('server is ready');
 });
