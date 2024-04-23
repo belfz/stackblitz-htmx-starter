@@ -44,6 +44,33 @@ app.get('/temperature', (req, res) => {
   res.send(`${currentTemperature.toFixed(1)} °C`);
 });
 
+// search.html example
+app.post('/search', async (req, res) => {
+  const { search } = req.body;
+
+  if (typeof search !== "string") {
+    res.send("<tr></tr>");
+  }
+
+  const response = await fetch(`https://jsonplaceholder.typicode.com/users`);
+  const users = await response.json() as { id: number; name: string; email: string; }[];
+
+  const searchResults = users.filter(user => {
+    const name = user.name.toLowerCase();
+    const email = user.email.toLowerCase();
+
+    return (name.includes(search) || email.includes(search));
+  });
+
+  res.send(searchResults.map(result => `
+    <tr>
+      <td><div class="my-4 p-2">${result.name}</div></td>
+      <td><div class="my-4 p-2">${result.email}</div></td>
+      <td></td>
+    </tr>
+  `).join(''))
+});
+
 // const dumbDb = ['initial item'];
 
 // app.get('/todo', (req, res) => {
