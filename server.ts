@@ -14,12 +14,15 @@ app.get('/users', async (req, res) => {
   const response = await fetch(`https://jsonplaceholder.typicode.com/users?_limit=${limit}`);
   const users = await response.json() as { id: number; name: string }[];
 
-  res.send(`
-    <h1 class="text-2xl font-bold my-4">Users</h1>
-    <ul>
-      ${users.map(user => `<li>${user.name}</li>`).join('')}
-    </ul>
-  `);
+  res.send(
+    /*html*/
+    `
+      <h1 class="text-2xl font-bold my-4">Users</h1>
+      <ul>
+        ${users.map(user => `<li>${user.name}</li>`).join('')}
+      </ul>
+    `
+  );
 });
 
 // temperature.html example
@@ -59,13 +62,16 @@ app.post('/search', async (req, res) => {
     return (name.includes(search) || email.includes(search));
   });
 
-  res.send(searchResults.map(result => `
-    <tr>
-      <td><div class="my-4 p-2">${result.name}</div></td>
-      <td><div class="my-4 p-2">${result.email}</div></td>
-      <td></td>
-    </tr>
-  `).join(''))
+  res.send(searchResults.map(result => 
+    /*html*/
+    `
+      <tr>
+        <td><div class="my-4 p-2">${result.name}</div></td>
+        <td><div class="my-4 p-2">${result.email}</div></td>
+        <td></td>
+      </tr>
+    `
+  ).join(''))
 });
 
 // validation.html example (email validation)
@@ -85,7 +91,9 @@ app.post('/contact/email', (req, res) => {
 
   const result = emailRegex.test(email) ? isValid : isInvalid;
 
-  return res.send(`
+  return res.send(
+    /*html*/
+    `
       <div class="mb-4" hx-target="this" hx-swap="outerHTML">
         <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email address</label>
         <input
@@ -119,6 +127,7 @@ const newTodo = (title: string): TodoItem => ({
 let dumbDb: TodoItem[] = [newTodo('initial item')];
 
 const renderTodoItem = (item: TodoItem): string => (
+  /*html*/
   `
     <li class="flex items-center mb-2 bg-slate-500 p-2 rounded shadow" id="${item.id}">
       <button
