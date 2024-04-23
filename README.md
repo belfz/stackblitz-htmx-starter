@@ -7,6 +7,9 @@ Examples based on https://www.youtube.com/watch?v=0UvA7zvwsmg&ab_channel=Travers
 - validation.html
 - weather.html
 
+Own examples (developed while learning):
+- todos.html
+
 ## notes
 - "HTMX is heavily dependend on having a backend"
 - [HATEOAS](https://en.wikipedia.org/wiki/HATEOAS)
