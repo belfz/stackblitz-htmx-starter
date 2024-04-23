@@ -34,7 +34,14 @@ app.post('/convert', (req, res) => {
     <p>
       ${fahrenheit} degrees Fahrenheit is equal to ${celsius.toFixed(2)} degrees Celsius
     </p>
-  `)
+  `);
+});
+
+// weather.html example
+let currentTemperature = 20;
+app.get('/temperature', (req, res) => {
+  currentTemperature += Math.random() * 2 - 1; // random temperature change
+  res.send(`${currentTemperature.toFixed(1)} °C`);
 });
 
 // const dumbDb = ['initial item'];
